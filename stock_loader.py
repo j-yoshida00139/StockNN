@@ -40,6 +40,7 @@ def get_dataset(fromInt, toInt):
         result_data = [float(x)/(2.0*input_ave) if float(x)/(2.0*input_ave)<0.95 else 0.95 for x in result_data]
         results.append(result_data)
 
+    zf.close()
     inputs = [np.reshape(x, (366, 1)) for x in inputs]
     results = [np.reshape(x, (12, 1)) for x in results]
     print "----"
