@@ -12,9 +12,11 @@ and omits many desirable features.
 #### Libraries
 # Standard library
 import random
-
+import csv
 # Third-party libraries
 import numpy as np
+
+import last_result_loader as lr_loader
 
 class Network(object):
 
@@ -30,9 +32,16 @@ class Network(object):
         won't set any biases for those neurons, since biases are only
         ever used in computing the outputs from later layers."""
         self.num_layers = len(sizes)
-        self.sizes = sizes
-        self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
-        self.weights = [np.random.randn(y, x)
+        
+        self.sizes, self.weights, self.biases = lr_loader.load_data()
+        if not self.sizes:
+            self.sizes = sizes
+            
+        if not self.biases:
+            self.biases = [np.random.randn(y, 1) for y in sizes[1:]]
+        
+        if not self.weights:
+            self.weights = [np.random.randn(y, x)
                         for x, y in zip(sizes[:-1], sizes[1:])]
 
     def feedforward(self, a):
@@ -65,6 +74,9 @@ class Network(object):
                     j, self.evaluate(test_data))
             else:
                 print "Epoch {0} complete".format(j)
+
+        lr_loader.store_result(self.sizes, self.weights, self.biases)
+        self.store_output(test_data)
 
     def update_mini_batch(self, mini_batch, eta):
         """Update the network's weights and biases by applying
@@ -131,6 +143,35 @@ class Network(object):
         """Return the vector of partial derivatives \partial C_x /
         \partial a for the output activations."""
         return (output_activations-y)
+    
+    def store_output(self, test_data):
+        inputs = [x for (x,y) in test_data]
+        outputs = [(self.feedforward(x), y)
+                        for (x, y) in test_data]
+        for i in range(len(inputs)):
+            input_ave = sum(inputs[i]) / float(len(inputs[i]))
+            fileName = "output/{0:08d}".format(i+1)
+            f = open(fileName + '.csv', 'w')
+            dataWriter = csv.writer(f)
+            x = 0
+            for j in range(0, len(inputs[i])):
+                outStr = []
+                outStr.append(x)
+                outStr.append(inputs[i][j][0])
+                outStr.append(inputs[i][j][0])
+                dataWriter.writerow(outStr)
+                x+=1
+            x+=15
+            for j in range(0, len(outputs[0][0])):
+                outStr = []
+                outStr.append(x)
+                outStr.append(outputs[i][0][j][0] * input_ave[0] * 2.0)
+                outStr.append(outputs[i][1][j][0] * input_ave[0] * 2.0)
+                dataWriter.writerow(outStr)
+                x+=30
+            f.close()
+
+
 
 #### Miscellaneous functions
 def sigmoid(z):
