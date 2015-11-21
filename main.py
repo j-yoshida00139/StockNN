@@ -12,7 +12,7 @@ n_neutral_neuron = 100
 n_output = 12
 n_epoch = 100
 n_batch_size = 500
-coe_learn = 0.1
+coe_learn = 0.01
 size = [n_input, n_neutral_neuron, n_output]
 
 for x in range(10):
