@@ -134,10 +134,11 @@ class Network(object):
         network outputs the correct result. Note that the neural
         network's output is assumed to be the index of whichever
         neuron in the final layer has the highest activation."""
-        test_results = [(self.feedforward(x), y)
+        results = [(self.feedforward(x), y)
                         for (x, y) in test_data]
-        sum_array = sum((x-y)**2 for (x, y) in test_results)
-        return sum(x for x in sum_array)
+        sum_array = sum(abs(x-y) for (x, y) in results)
+        total_error = sum(x/float(len(sum_array)*len(results))*2.0 for x in sum_array)
+        return total_error[0]
 
     def cost_derivative(self, output_activations, y):
         """Return the vector of partial derivatives \partial C_x /

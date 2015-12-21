@@ -333,8 +333,8 @@ class Network(object):
             for j in range(0, len(outputs[0][0])):
                 outStr = []
                 outStr.append(x)
-                outStr.append(outputs[i][0][j][0] * input_ave[0] * 2.0)
-                outStr.append(outputs[i][1][j][0] * input_ave[0] * 2.0)
+                outStr.append(outputs[i][0][j][0])
+                outStr.append(outputs[i][1][j][0])
                 dataWriter.writerow(outStr)
                 x+=30
             f.close()

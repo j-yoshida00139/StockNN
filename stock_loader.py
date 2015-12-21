@@ -23,9 +23,9 @@ def load_data():
     validation_data, test_data : same structure as training_data
     """
     n_total = 35000
-    n_training = 10000
-    n_validation = 1000
-    n_test = 1000
+    n_training = 30000
+    n_validation = 2500
+    n_test = 2500
     training_data, validation_data, test_data = get_random_data(n_training, n_validation, n_test, n_total)
     return (training_data, validation_data, test_data)
 
@@ -52,6 +52,7 @@ def get_data_by_list(n_list, zf):
         file_no     = "{0:08d}".format(i+1)
         input_data  = load_from_file('sample_output/input_raw_'+file_no+'.csv', zf)
         input_ave   = sum(input_data) / float(len(input_data))
+        input_data  = [float(x)/(2.0*input_ave) for x in input_data]
         result_data = load_from_file('sample_output/input_ave_'+file_no+'.csv', zf)
         result_data = [float(x)/(2.0*input_ave) if (float(x)/(2.0*input_ave)<0.95 and float(x)/(2.0*input_ave)>0.05)
                         else (0.95 if float(x)/(2.0*input_ave)>0.95 else 0.05) for x in result_data]
@@ -60,6 +61,7 @@ def get_data_by_list(n_list, zf):
 
     inputs = [np.reshape(x, (366, 1)) for x in inputs]
     results = [np.reshape(x, (12, 1)) for x in results]
+    print input_data[0]
     return zip(inputs, results)
 
 def load_from_file(fileName, zf):
